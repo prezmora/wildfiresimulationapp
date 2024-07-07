@@ -1,93 +1,47 @@
 import json
 import os
 import hashlib
-from cryptography.fernet import Fernet
-import streamlit as st
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Path to the users file
-USERS_FILE = "users.json"
-
-# Get encryption key from environment
-def get_key():
-    key = os.getenv("ENCRYPTION_KEY")
-    if not key:
-        raise ValueError("ENCRYPTION_KEY is not set in the environment.")
-    return key.encode()
-
-def encrypt_data(data, key):
-    f = Fernet(key)
-    return f.encrypt(data.encode()).decode()
-
-def decrypt_data(data, key):
-    f = Fernet(key)
-    return f.decrypt(data.encode()).decode()
+# File path for the JSON file
+user_file_path = 'user.json'
 
 def load_users():
-    if not os.path.exists(USERS_FILE):
-        return {}
-    with open(USERS_FILE, "r") as file:
-        encrypted_data = file.read()
-    key = get_key()
-    try:
-        decrypted_data = decrypt_data(encrypted_data, key)
-        return json.loads(decrypted_data)
-    except:
-        return {}
+    if os.path.exists(user_file_path):
+        with open(user_file_path, 'r') as file:
+            users_db = json.load(file)
+    else:
+        users_db = {}
 
-def save_users(users):
-    data = json.dumps(users, indent=4)
-    key = get_key()
-    encrypted_data = encrypt_data(data, key)
-    with open(USERS_FILE, "w") as file:
-        file.write(encrypted_data)
+    # Ensure the correct structure
+    if "emails" not in users_db:
+        users_db["emails"] = []
+    if "users" not in users_db:
+        users_db["users"] = []
+
+    return users_db
+
+def save_users(users_db):
+    with open(user_file_path, 'w') as file:
+        json.dump(users_db, file, indent=4)
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register(email, password, locations, send_verification_code):
-    users = load_users()
-    if email in users:
-        st.warning("Email already exists. Please choose another one.")
-        return False
+def register_user(users_db, email, password):
+    if email in users_db["emails"]:
+        return False, "Email already registered."
+    
+    hashed_password = hash_password(password)
+    users_db["emails"].append(email)
+    users_db["users"].append({"email": email, "password": hashed_password})
+    save_users(users_db)
+    return True, "Registration successful!"
 
-    verification_code = send_verification_code(email)
-    if not verification_code:
-        return False
-
-    st.session_state['verification_code'] = verification_code
-    st.session_state['pending_user'] = {
-        'email': email,
-        'password': hash_password(password),
-        'locations': locations
-    }
-    st.session_state['registration_pending'] = True
-    return True
-
-def complete_registration(verification_input):
-    if verification_input != st.session_state['verification_code']:
-        st.warning("Verification code is incorrect.")
-        return False
-
-    users = load_users()
-    pending_user = st.session_state['pending_user']
-    users[pending_user['email']] = pending_user
-    save_users(users)
-    st.success("Registration successful. You can now log in.")
-    st.session_state.clear()
-    return True
-
-def login(email, password):
-    users = load_users()
-    if email not in users:
-        st.warning("Email does not exist.")
-        return False
-    if users[email]['password'] != hash_password(password):
-        st.warning("Incorrect password.")
-        return False
-    st.success("Login successful.")
-    st.session_state['logged_in_user'] = email
-    return True
+def authenticate_user(users_db, email, password):
+    hashed_password = hash_password(password)
+    if email in users_db["emails"]:
+        user_index = users_db["emails"].index(email)
+        user = users_db["users"][user_index]
+        if user["password"] == hashed_password:
+            return True
+    return False

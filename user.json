@@ -1,1 +1,11 @@
-{}
+{
+    "emails": [
+        "prescila@gmail.com"
+    ],
+    "users": [
+        {
+            "email": "prescila@gmail.com",
+            "password": "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578"
+        }
+    ]
+}
