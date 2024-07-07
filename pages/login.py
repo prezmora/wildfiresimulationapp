@@ -1,11 +1,16 @@
 import streamlit as st
+from auth.user_utils import login
 
-def app():
-    with open('assets/style.css') as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
+def login_page():
     st.title("Login")
-    email = st.text_input("Email Address")
-    password = st.text_input("Password", type="password")
-    if st.button("Login"):
-        st.success("Logged in successfully")
+    
+    with st.form(key='login_form'):
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
+        submit_button = st.form_submit_button(label='Login')
+
+    if submit_button:
+        if login(email, password):
+            st.session_state['logged_in'] = True
+            st.experimental_set_query_params(page="dashboard")
+            st.experimental_rerun()

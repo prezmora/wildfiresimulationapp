@@ -1,77 +1,41 @@
-/* Bootstrap CSS */
-@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
-
-
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #1e1e1e;
-    color: #ffffff;
 }
 
-.sidebar .sidebar-content {
-    background-color: #333333;
-}
-
-.sidebar .sidebar-title {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #ffffff;
-}
-
-.sidebar .sidebar-item {
-    margin: 10px 0;
-    color: #ffffff;
-}
-
-.sidebar .sidebar-item a {
-    color: #ffffff;
-    text-decoration: none;
-}
-
-.sidebar .sidebar-item a:hover {
-    text-decoration: underline;
-}
-
-/* Main Content */
-.main-content {
-    padding: 20px;
-}
-
-.title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Forms */
-.form-control {
-    margin-bottom: 10px;
-}
-
-.form-button {
-    margin-top: 20px;
-}
-
-/* Menu Customization */
-.stSidebar selectbox {
-    background-color: #444444;
-    color: #ffffff;
-    border-radius: 5px;
+.sidebar-content {
+    background-color: #f8f9fa;
     padding: 10px;
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
-/* Button Customization */
-.stButton button {
-    background-color: #007bff;
-    color: white;
+.sidebar-item {
+    margin: 10px 0;
+}
+
+.sidebar-button {
+    width: 100%;
+    background: none;
     border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
+    color: #333;
+    text-align: left;
+    padding: 10px;
     font-size: 1rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
-.stButton button:hover {
-    background-color: #0056b3;
+.sidebar-button:hover {
+    background-color: #e0e0e0;
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
 }

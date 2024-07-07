@@ -1,8 +1,15 @@
 import streamlit as st
 
-def app():
-    with open('assets/style.css') as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+def home():
+    st.title("Home")
+    st.write("Welcome to the homepage!")
 
-    st.title("Wildfire Prediction App")
-    st.write("Welcome to the Wildfire Prediction App. Use the sidebar to navigate through the pages.")
+    if not st.session_state['logged_in']:
+        st.subheader("Please login or register to continue")
+
+        if st.button("Login"):
+            st.experimental_set_query_params(page="login")
+            st.experimental_rerun()
+        if st.button("Register"):
+            st.experimental_set_query_params(page="register")
+            st.experimental_rerun()

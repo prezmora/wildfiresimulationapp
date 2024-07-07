@@ -3,17 +3,20 @@ import os
 import hashlib
 from cryptography.fernet import Fernet
 import streamlit as st
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Path to the users file
 USERS_FILE = "users.json"
 
-# Generate or load encryption key
+# Get encryption key from environment
 def get_key():
-    key = os.environ.get("ENCRYPTION_KEY")
+    key = os.getenv("ENCRYPTION_KEY")
     if not key:
-        key = Fernet.generate_key()
-        os.environ["ENCRYPTION_KEY"] = key.decode()
-    return key
+        raise ValueError("ENCRYPTION_KEY is not set in the environment.")
+    return key.encode()
 
 def encrypt_data(data, key):
     f = Fernet(key)
