@@ -3,6 +3,11 @@ from auth.email_utils import send_verification_code
 from auth.user_utils import register, complete_registration, login
 from email_validator import validate_email, EmailNotValidError
 
+# Load CSS file
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 def main():
     st.title("Wildfire Simulation App")
 
