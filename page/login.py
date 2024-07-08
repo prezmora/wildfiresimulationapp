@@ -1,5 +1,5 @@
 import streamlit as st
-from auth.user_utils import authenticate_user
+from auth.user_utils import authenticate_user, load_users
 
 def show_login_page(users_db):
     st.title('User Login')
@@ -14,13 +14,10 @@ def show_login_page(users_db):
             st.session_state.logged_in = True
             st.session_state.user_email = email
             st.success("Login successful!")
-            navigate_to('home')
+            st.experimental_set_query_params(page="home")
+            st.experimental_rerun()
         else:
             st.error("Invalid email or password.")
-
-def navigate_to(page):
-    st.experimental_set_query_params(page=page)
-    st.experimental_rerun()
 
 if __name__ == "__main__":
     users_db = load_users()
