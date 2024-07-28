@@ -1,0 +1,5 @@
+streamlit
+smtplib
+email-validator
+cryptography
+python-dotenv

@@ -1,0 +1,21 @@
+{
+    "emails": [
+        "prescila@gmail.com",
+        "prescilafmora@gmail.com",
+        "prescila.f.mora@outlook.com"
+    ],
+    "users": [
+        {
+            "email": "prescila@gmail.com",
+            "password": "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578"
+        },
+        {
+            "email": "prescilafmora@gmail.com",
+            "password": "9232215382be165d37e67e4b8754bbb8d013a837269be2579c5a1dceea14d18d"
+        },
+        {
+            "email": "prescila.f.mora@outlook.com",
+            "password": "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578"
+        }
+    ]
+}
