@@ -5,6 +5,11 @@ from supabase import create_client, Client
 import os
 import torch
 from dotenv import load_dotenv
+from app.auth.user_utils import load_users
+from flask_cors import CORS
+
+# Add CORS support to your app
+CORS(app)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,7 +31,6 @@ with open('model.pth', 'wb') as f:
 class TemporalFusionTransformer(torch.nn.Module):
     def __init__(self):
         super(TemporalFusionTransformer, self).__init__()
-        # Define a simple dummy model architecture
         self.linear = torch.nn.Linear(3, 1)  # Example with input size 3 and output size 1
 
     def forward(self, x):
@@ -65,10 +69,8 @@ def login():
 @app.route('/api/predict', methods=['POST'])
 def predict():
     data = request.get_json()
-    # Preprocess the data to match your model's input requirements
     input_tensor = torch.tensor(data['inputs'], dtype=torch.float32)
     with torch.no_grad():
-        # For testing purposes, create a dummy prediction
         prediction = model(input_tensor).numpy().tolist()
     return jsonify({'prediction': prediction})
 
@@ -76,3 +78,4 @@ def predict():
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+

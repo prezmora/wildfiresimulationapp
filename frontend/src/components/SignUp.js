@@ -11,7 +11,7 @@ const SignUp = () => {
     if (error) {
       alert(error.message);
     } else {
-      alert('User created successfully');
+      alert('Sign up successful');
     }
   };
 

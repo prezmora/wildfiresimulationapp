@@ -1,3 +1,32 @@
 users.json
 .csv
 .pyc
+.env
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+
+# Next.js build output
+.next/
+out/
+
+# Gatsby files
+.cache/
+public/
+
+# Miscellaneous
+.DS_Store
+*.pem
