@@ -1,35 +1,46 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const { user, error } = await supabase.auth.signIn({ email, password });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { user, error } = await supabase.auth.signIn({
+      email,
+      password,
+    });
+
     if (error) {
-      alert(error.message);
+      setMessage(error.message);
     } else {
-      alert('Login successful');
-      history.push('/map');
+      setMessage('Login successful');
     }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <br />
-        <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <br />
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Login</button>
       </form>
+      <p>{message}</p>
     </div>
   );
 };

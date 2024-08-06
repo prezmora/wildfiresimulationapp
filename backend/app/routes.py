@@ -1,44 +1,14 @@
-import requests
 from flask import request, jsonify, send_from_directory
 from app import app
 from supabase import create_client, Client
-import os
-import torch
 from dotenv import load_dotenv
-from app.auth.user_utils import load_users
-from flask_cors import CORS
+import os
 
-# Add CORS support to your app
-CORS(app)
-
-# Load environment variables from .env file
 load_dotenv()
 
-# Supabase configuration
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# URL of the dummy model file
-MODEL_URL = os.getenv('MODEL_URL')
-
-# Download the dummy model file
-response = requests.get(MODEL_URL)
-with open('model.pth', 'wb') as f:
-    f.write(response.content)
-
-# Dummy model class
-class TemporalFusionTransformer(torch.nn.Module):
-    def __init__(self):
-        super(TemporalFusionTransformer, self).__init__()
-        self.linear = torch.nn.Linear(3, 1)  # Example with input size 3 and output size 1
-
-    def forward(self, x):
-        return self.linear(x)  # Dummy forward pass
-
-model = TemporalFusionTransformer()
-model.load_state_dict(torch.load('model.pth'))
-model.eval()
 
 @app.route('/')
 def index():
@@ -66,16 +36,18 @@ def login():
     except Exception as e:
         return jsonify({'message': str(e)}), 401
 
-@app.route('/api/predict', methods=['POST'])
-def predict():
-    data = request.get_json()
-    input_tensor = torch.tensor(data['inputs'], dtype=torch.float32)
-    with torch.no_grad():
-        prediction = model(input_tensor).numpy().tolist()
-    return jsonify({'prediction': prediction})
-
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/api/dummy', methods=['GET'])
+def dummy_data():
+    data = {
+        "locations": [
+            {"lat": 40.7128, "lon": -74.0060, "intensity": "high"},
+            {"lat": 34.0522, "lon": -118.2437, "intensity": "medium"},
+            {"lat": 37.7749, "lon": -122.4194, "intensity": "low"}
+        ]
+    }
+    return jsonify(data)
