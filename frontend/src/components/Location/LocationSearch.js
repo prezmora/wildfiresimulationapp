@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function LocationSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Implement search functionality
-  };
-
+const LocationSearch = () => {
   return (
-    <form onSubmit={handleSearch}>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search for a location"
-      />
-      <button type="submit">Search</button>
-    </form>
+    <div className="location-search">
+      <input type="text" placeholder="Search for location" />
+      <button>Search</button>
+    </div>
   );
-}
+};
 
 export default LocationSearch;

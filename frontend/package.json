@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.1",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
     "azure-maps-control": "^2.0.0",
@@ -14,8 +13,8 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "webpack serve --config webpack.config.js",
-    "build": "webpack --config webpack.config.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -35,23 +34,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@babel/core": "^7.18.9",
-    "@babel/preset-env": "^7.18.9",
-    "@babel/preset-react": "^7.18.9",
-    "babel-loader": "^8.2.5",
-    "html-loader": "^5.1.0",
-    "html-webpack-plugin": "^5.5.0",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.9.3"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
     ]
   }
 }

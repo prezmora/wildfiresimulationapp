@@ -1,17 +1,22 @@
 import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import WeatherSummary from '../components/Dashboard/WeatherSummary';
 import FireAdvisory from '../components/Dashboard/FireAdvisory';
 import Forecast from '../components/Dashboard/Forecast';
 
-function DashboardPage() {
+const DashboardPage = () => {
   return (
-    <div className="dashboard-page">
-      <h2>Dashboard</h2>
-      <WeatherSummary />
-      <FireAdvisory />
-      <Forecast />
+    <div>
+      <Header />
+      <main>
+        <WeatherSummary />
+        <FireAdvisory />
+        <Forecast />
+      </main>
+      <Footer />
     </div>
   );
-}
+};
 
 export default DashboardPage;

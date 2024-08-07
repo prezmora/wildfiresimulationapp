@@ -1,15 +1,20 @@
 import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import AirQualityGauge from '../components/AirQuality/AirQualityGauge';
 import AirQualityForecast from '../components/AirQuality/AirQualityForecast';
 
-function AirQualityPage() {
+const AirQualityPage = () => {
   return (
-    <div className="air-quality-page">
-      <h2>Air Quality</h2>
-      <AirQualityGauge />
-      <AirQualityForecast />
+    <div>
+      <Header />
+      <main>
+        <AirQualityGauge />
+        <AirQualityForecast />
+      </main>
+      <Footer />
     </div>
   );
-}
+};
 
 export default AirQualityPage;

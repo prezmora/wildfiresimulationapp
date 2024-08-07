@@ -1,19 +1,16 @@
 import React from 'react';
 import MapView from '../components/Map/MapView';
-import MapControls from '../components/Map/MapControls';
 import Legend from '../components/Map/Legend';
+import MapControls from '../components/Map/MapControls';
 
-function MapPage() {
+const MapPage = () => {
   return (
-    <div className="map-page">
-      <h2>Wildfire Forecast Map</h2>
-      <div className="map-container">
-        <MapView />
-        <MapControls />
-        <Legend />
-      </div>
+    <div>
+      <MapControls />
+      <Legend />
+      <MapView />
     </div>
   );
-}
+};
 
 export default MapPage;

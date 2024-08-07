@@ -1,30 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import DashboardPage from './pages/DashboardPage';
+import SignUp from './components/Auth/SignUp';
+import Login from './components/Auth/Login';
+import Verification from './components/Auth/Verification';
 import MapPage from './pages/MapPage';
-import AirQualityPage from './pages/AirQualityPage';
-import LocationPage from './pages/LocationPage';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import './styles/main.css';
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Header />
-        <main>
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/dashboard" component={DashboardPage} />
-            <Route path="/map" component={MapPage} />
-            <Route path="/air-quality" component={AirQualityPage} />
-            <Route path="/location" component={LocationPage} />
-          </Switch>
-        </main>
-        <Footer />
-      </div>
+      <Switch>
+        <Route path="/signup" component={SignUp} />
+        <Route path="/login" component={Login} />
+        <Route path="/verification" component={Verification} />
+        <Route path="/map" component={MapPage} />
+        <Route exact path="/" component={Login} />
+      </Switch>
     </Router>
   );
 }

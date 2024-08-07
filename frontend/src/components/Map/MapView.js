@@ -1,20 +1,26 @@
 import React, { useEffect } from 'react';
-import { AzureMapsProvider, AzureMap } from 'react-azure-maps';
+import atlas from 'azure-maps-control';
 
-function MapView() {
+const MapView = () => {
   useEffect(() => {
-    // Initialize map and add layers here
+    const map = new atlas.Map('map', {
+      center: [-123.121, 49.2827],
+      zoom: 10,
+      language: 'en-US',
+      authOptions: {
+        authType: 'subscriptionKey',
+        subscriptionKey: 'YOUR_AZURE_MAPS_SUBSCRIPTION_KEY'
+      }
+    });
+
+    map.events.add('ready', function () {
+      map.controls.add(new atlas.control.ZoomControl(), {
+        position: 'top-right'
+      });
+    });
   }, []);
 
-  return (
-    <AzureMapsProvider>
-      <AzureMap options={{
-        center: [-110, 50],
-        zoom: 4,
-        style: 'night'
-      }} />
-    </AzureMapsProvider>
-  );
-}
+  return <div id="map" style={{ width: '100%', height: '500px' }}></div>;
+};
 
 export default MapView;

@@ -1,13 +1,12 @@
 import React from 'react';
 
-function AirQualityGauge() {
+const AirQualityGauge = () => {
   return (
     <div className="air-quality-gauge">
-      <h3>Current Air Quality</h3>
-      {/* Add gauge visualization here */}
-      <p>Air Quality Index: 75 (Moderate)</p>
+      <h2>Air Quality</h2>
+      {/* Add air quality gauge here */}
     </div>
   );
-}
+};
 
 export default AirQualityGauge;
