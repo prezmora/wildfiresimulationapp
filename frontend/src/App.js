@@ -1,19 +1,32 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import SignUp from './components/SignUp';
-import Login from './components/Login';
-import Verification from './components/Verification';
-import AzureMap from './components/Map';
+import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
+import MapPage from './pages/MapPage';
+import AirQualityPage from './pages/AirQualityPage';
+import LocationPage from './pages/LocationPage';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import './styles/main.css';
 
-const AppRouter = () => (
-  <Router>
-    <Switch>
-      <Route path="/signup" component={SignUp} />
-      <Route path="/login" component={Login} />
-      <Route path="/map" component={AzureMap} />
-      <Route exact path="/" component={Verification} />
-    </Switch>
-  </Router>
-);
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Header />
+        <main>
+          <Switch>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/dashboard" component={DashboardPage} />
+            <Route path="/map" component={MapPage} />
+            <Route path="/air-quality" component={AirQualityPage} />
+            <Route path="/location" component={LocationPage} />
+          </Switch>
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
 
-export default AppRouter;
+export default App;
