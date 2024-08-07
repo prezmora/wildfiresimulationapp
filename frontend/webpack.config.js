@@ -13,7 +13,6 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
-    port: 3000,
   },
   module: {
     rules: [
@@ -46,3 +45,7 @@ module.exports = {
     extensions: ['*', '.js', '.jsx']
   }
 };
+"scripts": {
+  "start": "webpack serve --mode development --open",
+  "build": "webpack --mode production"
+}
