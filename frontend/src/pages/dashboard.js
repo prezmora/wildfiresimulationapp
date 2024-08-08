@@ -1,30 +1,35 @@
-import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import Header from '../components/Header';
+// src/pages/dashboard.js
+import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
-
-const MapWithNoSSR = dynamic(() => import('react-leaflet').then((mod) => mod.Map), { ssr: false });
+import { useRouter } from 'next/router';
+import Layout from '../components/Layout';
+import Header from '../components/Header';
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  const [Email, setEmail] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch('/api/simulation');
-      const result = await response.json();
-      setData(result.predictions);
-    }
-    fetchData();
-  }, []);
+    const checkUser = async () => {
+      const session = JSON.parse(localStorage.getItem('supabaseSession'));
+
+      if (!session) {
+        router.push('/login');
+      } else {
+        const user = session.user;
+        setEmail(user.email);
+      }
+    };
+
+    checkUser();
+  }, [router]);
 
   return (
-    <>
-      <Header Email={supabase.auth.user()?.email || 'User'} />
-      <div className="p-4">
-        <h1 className="text-2xl mb-4">Wildfire Simulation</h1>
-        <MapWithNoSSR />
-        {/* Render your map or any other UI elements using the data */}
+    <Layout>
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl mb-4">Dashboard</h2>
+        {/* Dashboard content goes here */}
       </div>
-    </>
+    </Layout>
   );
 }
