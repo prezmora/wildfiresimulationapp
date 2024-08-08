@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -13,6 +13,8 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
+    port: 3000,
+    allowedHosts: 'all',  // Add this line
   },
   module: {
     rules: [
@@ -45,7 +47,3 @@ module.exports = {
     extensions: ['*', '.js', '.jsx']
   }
 };
-"scripts": {
-  "start": "webpack serve --mode development --open",
-  "build": "webpack --mode production"
-}
