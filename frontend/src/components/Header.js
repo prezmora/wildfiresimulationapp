@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient';
+import styles from '../styles/Header.module.css'; // Import Header styles
 
 export default function Header() {
   const [Email, setEmail] = useState('');
@@ -28,7 +29,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white shadow-md">
+    <header className={`flex items-center justify-between p-4 bg-white shadow-md ${styles.header}`}>
       <div className="flex items-center">
         <img
           src="/assets/logo.png"
@@ -38,7 +39,7 @@ export default function Header() {
         <h1 className="text-xl font-semibold">Wildfire Simulation</h1>
       </div>
       {Email && (
-        <div className="flex items-center ml-auto text-gray-600 text-right">
+        <div className={`flex items-center ml-auto text-gray-600 text-right ${styles['text-gray-600']}`}>
           <span className="mr-4">{Email}</span>
           <button
             onClick={handleLogout}

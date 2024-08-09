@@ -1,4 +1,3 @@
-// src/pages/login.js
 import { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useRouter } from 'next/router';
@@ -21,7 +20,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded shadow-md p-8">
-        <h1 className="text-2xl font-semibold mb-6">Login</h1>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label className="block text-gray-700">Email Address</label>
@@ -45,7 +43,7 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
           >
             Login
           </button>
@@ -55,7 +53,7 @@ export default function Login() {
             Don't have an account?{' '}
             <a
               href="/signup"
-              className="text-blue-500 hover:underline"
+              className="text-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 router.push('/signup');
@@ -67,7 +65,7 @@ export default function Login() {
           <p>
             <a
               href="/forget-password"
-              className="text-blue-500 hover:underline"
+              className="text-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 router.push('/forget-password');
