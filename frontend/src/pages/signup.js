@@ -1,10 +1,10 @@
-// src/pages/signup.js
 import { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useRouter } from 'next/router';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
+  const [location, setLocation] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
@@ -22,7 +22,6 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded shadow-md p-8">
-        <h1 className="text-2xl font-semibold mb-6">Sign Up</h1>
         <form onSubmit={handleSignup}>
           <div className="mb-4">
             <label className="block text-gray-700">Email Address</label>
@@ -32,6 +31,15 @@ export default function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Location</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border rounded"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
             />
           </div>
           <div className="mb-6">
@@ -46,24 +54,25 @@ export default function Signup() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
           >
             Sign Up
           </button>
         </form>
         <div className="mt-4 text-center">
           <p>
-            Already have an account?{' '}
+            if you have an existing account, please{' '}
             <a
               href="/login"
-              className="text-blue-500 hover:underline"
+              className="text-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 router.push('/login');
               }}
             >
-              Log in here
-            </a>
+              login
+            </a>{' '}
+            here.
           </p>
         </div>
       </div>

@@ -1,0 +1,18 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header img {
+    width: 64px; /* Adjust based on your preference */
+  }
+  
+  .header .text-gray-600 {
+    margin-left: auto; /* Ensures the email is on the right */
+    font-size: 0.875rem; /* Adjust based on your preference */
+  }
+  
