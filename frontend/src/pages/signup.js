@@ -1,8 +1,25 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useRouter } from 'next/router';
+import React from 'react';
+import './YourStylesheet.css'; // Adjust this path based on where your CSS file is located
 
-export default function Home() {
+// Signup Component
+export default function Signup() {
+  return (
+    <div className="form-container">
+      <input type="email" placeholder="Email Address" />
+      <input type="text" placeholder="Location" />
+      <button>Sign Up</button>
+      <div className="additional-text">
+        if you have an existing account, please <a href="/login">login</a> here.
+      </div>
+    </div>
+  );
+}
+
+// Home Component (assuming this should be in another file)
+export function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -11,9 +28,8 @@ export default function Home() {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
-        
+
         if (session) {
-          // Redirect to the notification prompt page instead of directly to the dashboard
           router.push('/NotificationPrompt');
         } else {
           router.push('/login');
@@ -26,4 +42,10 @@ export default function Home() {
       }
     };
 
-   
+    checkSession();
+  }, [router]);
+
+  if (loading) return <div>Loading...</div>;
+
+  return null; // 
+}

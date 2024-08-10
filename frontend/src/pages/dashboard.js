@@ -8,6 +8,7 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date('2024-01-30'));
   const [location, setLocation] = useState('');
   const [mapSrc, setMapSrc] = useState('');
+  const [predictions, setPredictions] = useState([]); // New state for predictions
   const router = useRouter();
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -57,6 +58,19 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    // Commented out prediction fetching logic for now, to be implemented when data is available
+    // const fetchPredictions = async () => {
+    //   if (location) { // Ensure location is defined before making the request
+    //     const response = await fetch(`/api/predict?date=${selectedDate}&location=${location}`);
+    //     const data = await response.json();
+    //     setPredictions(data.predictions);
+    //   }
+    // };
+
+    // fetchPredictions();
+  }, [selectedDate, location]);
+
   return (
     <Layout>
       <div className="relative w-full h-full max-w-5xl max-h-96 mb-4">
@@ -104,6 +118,7 @@ export default function Dashboard() {
           Search
         </button>
       </form>
+      {/* <div>Predictions: {JSON.stringify(predictions)}</div> */}
     </Layout>
   );
 }
