@@ -1,51 +1,54 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-.header {
+.legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 1px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.header img {
-  width: 64px; /* Adjust based on your preference */
+.legend span {
+  padding: 3px 10px;
+  border-radius: 1 px;
+  font-weight: bold;
+  color: white;
 }
 
-.header .text-gray-600 {
-  margin-left: auto; /* Ensures the email is on the right */
-  font-size: 0.875rem; /* Adjust based on your preference */
+.legend .low {
+  background-color: #2eb64d;
+}
+
+.legend .medium {
+  background-color: rgb(11, 102, 11);
+}
+
+.legend .high {
+  background-color: #ff9800;
+}
+
+.legend .very-high {
+  background-color: #dc3545;
+}
+
+.legend .extreme {
+  background-color: #6f42c1;
+}
+
+form {
+  display: absolute;
+  width: 95
+  %;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  width: calc(80% - 60px); /* Adjust the width as needed */
+}
+
+button {
+  width: 120px; /* Width of the search button */;
+  color: blue
 }
