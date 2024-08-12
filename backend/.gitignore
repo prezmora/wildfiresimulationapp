@@ -11,3 +11,5 @@
 /backend/.venv/*
 /backend/.venv-3.10/*
 /backend/.venv/bin/*
+backend/*
+backend/modules/__pycache__/*

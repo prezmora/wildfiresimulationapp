@@ -49,6 +49,7 @@ node_modules
 
 /venv/*
 /.venv/*
+.venv/*
 /.venv-3.10/*
 /.venv/bin/*
 
@@ -57,3 +58,15 @@ node_modules
 /backend/.venv/*
 /backend/.venv-3.10/*
 /backend/.venv/bin/*
+
+/frontend/venv/*
+/frontend/.venv/*
+/frontend/.venv-3.10/*
+/frontend/.venv/bin/*
+
+/backend/venv/*
+/backend/.venv/*
+/backend/.venv-3.10/*
+/backend/.venv/bin/*
+backend/*
+backend/modules/__pycache__/*
