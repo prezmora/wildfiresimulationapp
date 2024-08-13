@@ -94,19 +94,19 @@ def model_predict(historical_data_df):
 
     # Get distinct localities
     distinct_localities = historical_data_df[['locality', 'lon', 'lat']].drop_duplicates()
-
+    
     # Merge predictions with distinct localities
     predict_merged = predict_merged.merge(distinct_localities, on='locality', how='left')
-
-     # Sort by prediction in descending order and drop duplicates, keeping the first occurrence
-    predict_merged = predict_merged.sort_values(by='prediction', ascending=False).drop_duplicates(subset='locality', keep='first')
     # print("predict_merged",predict_merged)
+    # print("predict_merged",predict_merged.to_dict(orient="records"))
 
+    
     # Return predictions as JSON
     return jsonify({
         "predictions": predict_merged.to_dict(orient="records"),
         "message": "Predictions generated successfully"
     }), 200
+    
 
 # Flask route for handling prediction requests
 @model_predict_bp.route('/predict', methods=['POST'])
@@ -121,10 +121,13 @@ def predict_route():
         historical_data_df = pd.DataFrame(historical_data)
 
         # Run predictions
-        predictions_df = model_predict(historical_data_df)
-
-        # Return predictions to the frontend
-        return predictions_df
-
+        # predictions = model_predict(historical_data_df)
+        
+        # print("predictions",predictions)
+        # # # Return predictions to the frontend
+        # return predictions
+        
+        return model_predict(historical_data_df)
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500

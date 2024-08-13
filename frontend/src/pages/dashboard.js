@@ -65,7 +65,7 @@ export default function Dashboard() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ historical_data: historicalData }), // Send historical data to the API
+        body: JSON.stringify({ predictions: historicalData }), // Send historical data to the API
       });
 
       if (!response.ok) {
@@ -77,7 +77,7 @@ export default function Dashboard() {
       if (data && data.predictions && data.predictions.length > 0) {
         setPredictions(data.predictions); // Use dynamic data if available
         updateMapMarkers(data.predictions); // Update the map with new markers
-        setMessage(''); // Clear any previous message
+        setMessage('there is a data'); // Clear any previous message
       } else {
         setPredictions([]); // Clear predictions
         setMessage('No predictions available for the selected date.'); // Set message
@@ -86,7 +86,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error fetching predictions:', error);
       setPredictions([]); // Clear predictions
-      setMessage('Error fetching predictions. Please try again later.'); // Set error message
+      setMessage('No predictions available for the selected date.'); // Set error message
       updateMapMarkers([]); // Clear markers on the map
     }
   };
@@ -162,7 +162,7 @@ export default function Dashboard() {
         </div>
         <div className="map-container" style={{ position: 'relative', width: '100%', height: '500px' }}>
           <iframe
-            src={setMapSrc}
+            src={mapSrc}
             width="100%"
             height="100%"
             frameBorder="0"
