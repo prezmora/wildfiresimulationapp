@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [predictions, setPredictions] = useState([]); // State to store predictions
   const router = useRouter();
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const backendUrl = 'http://localhost:5000'; // Backend server URL
 
   useEffect(() => {
     const checkUser = async () => {
@@ -47,7 +48,7 @@ export default function Dashboard() {
     const fetchHistoricalData = async () => {
       try {
         // Fetch historical data from the backend
-        const response = await fetch(`/historical-data?date=${selectedDate.toISOString().split('T')[0]}`);
+        const response = await fetch(`http://localhost:5000/api/historical-data?date=${selectedDate.toISOString().split('T')[0]}`);
         
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -77,7 +78,7 @@ export default function Dashboard() {
 
       try {
         // Attempt to fetch predictions from the model_predict API
-        const response = await fetch('/api/predict', {
+        const response = await fetch(`${backendUrl}/api/predict`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

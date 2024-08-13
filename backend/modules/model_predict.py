@@ -8,7 +8,7 @@ from pytorch_forecasting.models import TemporalFusionTransformer
 from pytorch_forecasting.metrics import QuantileLoss
 from dotenv import load_dotenv
 import types
-import __main__  # Used for workaround 2
+import __main__ 
 
 # Load environment variables
 load_dotenv()
@@ -70,9 +70,10 @@ def model_predict(historical_data_df):
     # Ensure historical_data_df is a DataFrame and matches the expected format
     # print("Xthis is it", historical_data_df)
     if not isinstance(historical_data_df, pd.DataFrame):
-        raise ValueError("historical_data must be a pandas    DataFrame")
+        raise ValueError("historical_data must be a pandas DataFrame")
 
-    
+        # Load the best model using the new load_model function
+    #  best_tft = load_model(BEST_MODEL_PATH)
     # print("traindataset", train_dataset)
     print("before validation dataset")
     # Prepare the validation dataset based on historical data
@@ -88,8 +89,7 @@ def model_predict(historical_data_df):
     batch_size = 64
     val_dataloader = validation_dataset.to_dataloader(train=False, batch_size=batch_size * 10, num_workers=4)
   
-    # Load the best model using the new load_model function
-    # best_tft = load_model(BEST_MODEL_PATH)
+
     
     # Move the model to CPU if necessary (this should already be done in load_model)
     if next(best_tft.parameters()).is_cuda:
