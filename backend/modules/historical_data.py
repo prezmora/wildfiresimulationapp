@@ -28,7 +28,6 @@ def get_historical_data():
     try:
         # Extract the selected date from the query string
         selected_date = request.args.get('date')
-        # logging.debug(f"Selected Date: {selected_date}")
         if not selected_date:
             return jsonify({"error": "No date provided"}), 400
 
@@ -45,7 +44,6 @@ def get_historical_data():
             WHERE (year, month, day) >= ({start_date.year}, {start_date.month}, {start_date.day})
             AND (year, month, day) <= ({date_obj.year}, {date_obj.month}, {date_obj.day})
         """
-        # logging.debug(f"SQL Query: {sql_query}")
 
         # Connect to the database
         connection = psycopg2.connect(
@@ -63,23 +61,17 @@ def get_historical_data():
             logging.info("No data found for the specified date range.")
             return jsonify({"message": "No data found for the specified date range."}), 200
 
-        # Log the fetched data for debugging purposes
-        # logging.debug(f"Database Response Data: {data}")
-
         # Convert the fetched data to a DataFrame
         columns = [desc[0] for desc in cursor.description]  # Get column names from the cursor
         historical_data_df = pd.DataFrame(data, columns=columns)
 
-        # Log the DataFrame for debugging purposes
-        # logging.debug(f"Historical Data DataFrame: {historical_data_df}")
-
-        # Pass the DataFrame to the model_predict function
+        # Pass the DataFrame to the model_predict function to generate predictions
         predictions = model_predict(historical_data_df)
 
         return predictions  # This will be a JSON response generated in model_predict
 
     except Exception as e:
-        logging.error(f"Error occurred on Hist   Data: {str(e)}")
+        logging.error(f"Error occurred while fetching historical data: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
     finally:

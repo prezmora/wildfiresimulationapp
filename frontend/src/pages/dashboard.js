@@ -7,13 +7,12 @@ import { supabase } from '../utils/supabaseClient';
 
 export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(() => {
-    return new Date(2023, 9, 30); // Set the initial date to January 1, 2024
+    return new Date(2023, 9, 30); // Set the initial date
   });
   const [location, setLocation] = useState('');
   const [email, setEmail] = useState('');
-  const [mapSrc, setMapSrc] = useState('');
-  const [historicalData, setHistoricalData] = useState([]); // State to store historical data
   const [predictions, setPredictions] = useState([]); // State to store predictions
+  const [map, setMap] = useState(null); // Store map instance
   const [message, setMessage] = useState(''); // State to store messages (e.g., no predictions)
   const router = useRouter();
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -31,68 +30,26 @@ export default function Dashboard() {
     };
 
     checkUser();
-  }, [router]);
 
-  useEffect(() => {
-    const fetchHistoricalData = async () => {
-      try {
-        // Fetch historical data from the backend
-        const response = await fetch(`${backendUrl}/api/historical-data?date=${selectedDate.toISOString().split('T')[0]}`);
-        
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        
-        const data = await response.json();
-        setHistoricalData(data.queried_data || []);
-        console.log('Historical Data:', data);
-
-        // Now fetch the predictions based on the historical data
-        fetchPredictions(data.queried_data || []);
-      } catch (error) {
-        console.error('Error fetching historical data:', error);
-      }
-    };
-
-    fetchHistoricalData();
-  }, [selectedDate]);
-
-  const fetchPredictions = async (historicalData) => {
-    try {
-      // Attempt to fetch predictions from the model_predict API
-      const response = await fetch(`${backendUrl}/api/predict`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ predictions: historicalData }), // Send historical data to the API
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-
-      if (data && data.predictions && data.predictions.length > 0) {
-        setPredictions(data.predictions); // Use dynamic data if available
-        updateMapMarkers(data.predictions); // Update the map with new markers
-        setMessage('there is a data'); // Clear any previous message
-      } else {
-        setPredictions([]); // Clear predictions
-        setMessage('No predictions available for the selected date.'); // Set message
-        updateMapMarkers([]); // Clear markers on the map
-      }
-    } catch (error) {
-      console.error('Error fetching predictions:', error);
-      setPredictions([]); // Clear predictions
-      setMessage('No predictions available for the selected date.'); // Set error message
-      updateMapMarkers([]); // Clear markers on the map
+    // Load Google Maps script dynamically
+    if (!window.google) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+      script.onload = () => {
+        initializeMap([]); // Initialize the map when the script is loaded
+      };
+    } else {
+      initializeMap([]); // Initialize the map immediately if the script is already loaded
     }
-  };
+  }, [router]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    // Re-fetch predictions when the date changes
+    fetchDataAndPredictions(date);
   };
 
   const handleLocationSearch = async (e) => {
@@ -107,44 +64,88 @@ export default function Dashboard() {
 
     if (matchedPrediction) {
       // Update map based on the matched locality's lat and lon
-      setMapSrc(
-        `https://www.google.com/maps/embed/v1/view?key=${googleMapsApiKey}&center=${matchedPrediction.lat},${matchedPrediction.lon}&zoom=12&markers=${matchedPrediction.lat},${matchedPrediction.lon}`
-      );
-    } else {
-      // Fallback to a generic Google Maps search if locality is not found
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            location
-          )}&key=${googleMapsApiKey}`
-        );
-        const data = await response.json();
-
-        if (data.status === 'OK') {
-          const { lat, lon } = data.results[0].geometry.location;
-          setMapSrc(
-            `https://www.google.com/maps/embed/v1/view?key=${googleMapsApiKey}&center=${lat},${lon}&zoom=12&markers=${lat},${lon}`
-          );
-        } else {
-          alert('Location not found. Please try again.');
-        }
-      } catch (error) {
-        alert('An error occurred while fetching the location. Please try again.');
+      const mapOptions = {
+        center: { lat: matchedPrediction.lat, lng: matchedPrediction.lon },
+        zoom: 12,
+      };
+      if (map) {
+        map.setOptions(mapOptions);
+        clearMarkers(); // Clear existing markers
+        addMarker({ lat: matchedPrediction.lat, lng: matchedPrediction.lon }, map); // Add new marker
       }
+      setMessage(`Prediction: ${matchedPrediction.prediction}`);
+    } else {
+      alert('Location not found in predictions. Please try again.');
     }
   };
 
-  const updateMapMarkers = (predictions) => {
-    if (predictions.length > 0) {
-      // Construct the markers from predictions
-      const markers = predictions.map((prediction) => `${prediction.lat},${prediction.lon}`).join('|');
-      setMapSrc(
-        `https://www.google.com/maps/embed/v1/view?key=${googleMapsApiKey}&center=56.1304,-106.3468&zoom=4&markers=${markers}`
-      );
+  const fetchDataAndPredictions = async (date) => {
+    try {
+      // Fetch historical data and predictions from the backend
+      const response = await fetch(`${backendUrl}/api/historical-data?date=${date.toISOString().split('T')[0]}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const data = await response.json();
+
+      if (data && data.predictions && data.predictions.length > 0) {
+        setPredictions(data.predictions); // Use dynamic data if available
+        setMessage(''); // Clear any previous message
+        initializeMap(data.predictions); // Initialize map with predictions
+      } else {
+        setPredictions([]); // Clear predictions
+        setMessage('No wildfire predictions available for the selected date.'); // Set message
+        initializeMap([]); // Initialize blank map
+      }
+    } catch (error) {
+      console.error('Error fetching data or predictions:', error);
+      setPredictions([]); // Clear predictions
+      setMessage('Error fetching data or predictions.'); // Set error message
+      initializeMap([]); // Initialize blank map
+    }
+  };
+
+  const initializeMap = (predictions) => {
+    const canadaCenter = { lat: 56.1304, lng: -106.3468 };
+
+    // Initialize the map
+    const mapOptions = {
+      center: canadaCenter,
+      zoom: 4,
+    };
+
+    if (!map) {
+      const mapInstance = new google.maps.Map(document.getElementById('map'), mapOptions);
+      setMap(mapInstance);
+      addMarkers(predictions, mapInstance); // Add markers to the newly created map instance
     } else {
-      setMapSrc(
-        `https://www.google.com/maps/embed/v1/view?key=${googleMapsApiKey}&center=56.1304,-106.3468&zoom=4`
-      );
+      clearMarkers(); // Clear any existing markers if map is already initialized
+      addMarkers(predictions, map); // Add new markers
+    }
+  };
+
+  const addMarker = (position, mapInstance) => {
+    return new google.maps.Marker({
+      position: position,
+      map: mapInstance,
+    });
+  };
+
+  const addMarkers = (predictions, mapInstance) => {
+    const markers = predictions.map(prediction => {
+      return addMarker({ lat: prediction.lat, lng: prediction.lon }, mapInstance);
+    });
+
+    // Save markers to map instance for future reference
+    mapInstance.markers = markers;
+  };
+
+  const clearMarkers = () => {
+    if (map && map.markers) {
+      map.markers.forEach(marker => marker.setMap(null));
+      map.markers = [];
     }
   };
 
@@ -159,25 +160,6 @@ export default function Dashboard() {
             dateFormat="yyyy/MM/dd"
             maxDate={new Date()}
           />
-        </div>
-        <div className="map-container" style={{ position: 'relative', width: '100%', height: '500px' }}>
-          <iframe
-            src={mapSrc}
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            aria-hidden="false"
-            tabIndex="0"
-          ></iframe>
-          <div className="legend">
-            <span className="low">Low</span>
-            <span className="medium">Medium</span>
-            <span class="high">High</span>
-            <span className="very-high">Very High</span>
-            <span className="extreme">Extreme</span>
-          </div>
         </div>
         <div>
           <form onSubmit={handleLocationSearch} className="w-full flex items-center mt-4">
@@ -197,12 +179,11 @@ export default function Dashboard() {
           </form>
         </div>
         {message && <p className="text-red-500 mt-4">{message}</p>} {/* Display message if no predictions */}
+        <div id="map" className="map-container" style={{ position: 'relative', width: '100%', height: '500px' }}></div>
         <div>
-          {/* Example of rendering markers or other data points on the map */}
           {predictions.map((prediction, index) => (
             <div key={index}>
               <p>Time: {prediction.time_idx}, Locality: {prediction.locality}, Lat: {prediction.lat}, Lon: {prediction.lon}, Prediction: {prediction.prediction}</p>
-              {/* You can use this data to add markers to Google Maps or other visualizations */}
             </div>
           ))}
         </div>

@@ -97,9 +97,12 @@ def model_predict(historical_data_df):
     
     # Merge predictions with distinct localities
     predict_merged = predict_merged.merge(distinct_localities, on='locality', how='left')
-    # print("predict_merged",predict_merged)
-    # print("predict_merged",predict_merged.to_dict(orient="records"))
+    
+    
+    print("predict_merged",predict_merged)
+    
 
+    
     
     # Return predictions as JSON
     return jsonify({
@@ -108,26 +111,26 @@ def model_predict(historical_data_df):
     }), 200
     
 
-# Flask route for handling prediction requests
-@model_predict_bp.route('/predict', methods=['POST'])
-def predict_route():
-    try:
-        # Get historical data from the request body
-        historical_data = request.json.get('historical_data')
-        if not historical_data:
-            return jsonify({"error": "No historical data provided"}), 400
+# # Flask route for handling prediction requests
+# @model_predict_bp.route('/predict', methods=['POST'])
+# def predict_route():
+#     try:
+#         # Get historical data from the request body
+#         historical_data = request.json.get('historical_data')
+#         if not historical_data:
+#             return jsonify({"error": "No historical data provided"}), 400
         
-        # Convert to DataFrame
-        historical_data_df = pd.DataFrame(historical_data)
+#         # Convert to DataFrame
+#         historical_data_df = pd.DataFrame(historical_data)
 
-        # Run predictions
-        # predictions = model_predict(historical_data_df)
+#         # Run predictions
+#         # predictions = model_predict(historical_data_df)
         
-        # print("predictions",predictions)
-        # # # Return predictions to the frontend
-        # return predictions
+#         # print("predictions",predictions)
+#         # # # Return predictions to the frontend
+#         # return predictions
         
-        return model_predict(historical_data_df)
+#         return model_predict(historical_data_df)
         
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
