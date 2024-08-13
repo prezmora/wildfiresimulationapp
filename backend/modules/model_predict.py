@@ -49,7 +49,6 @@ def model_predict(historical_data_df):
         raise ValueError("historical_data must be a pandas DataFrame")
 
     # Define the model
-    # Use the weighted loss in the model definition
     best_tft = TemporalFusionTransformer.from_dataset(
         train_dataset,
         learning_rate=1e-3,
@@ -57,8 +56,7 @@ def model_predict(historical_data_df):
         attention_head_size=4,
         dropout=0.1,
         hidden_continuous_size=32,
-    # output_size=7,  # number of quantiles
-        loss=WeightedQuantileLoss(zero_weight=1.0, non_zero_weight=10.0),  # Adjust weights as needed
+        loss=WeightedQuantileLoss(zero_weight=1.0, non_zero_weight=10.0),
         log_interval=10,
         reduce_on_plateau_patience=10
     )
@@ -69,16 +67,14 @@ def model_predict(historical_data_df):
     best_tft.load_state_dict(state_dict['state_dict'], strict=False)
     best_tft.eval()
 
-    test_filled = pd.DataFrame(historical_data_df)
     validation_dataset = TimeSeriesDataSet.from_dataset(
         train_dataset,
-        test_filled,
+        historical_data_df,
         predict=True,
         stop_randomization=True,
     )
 
-    batch_size = 64
-    val_dataloader = validation_dataset.to_dataloader(train=False, batch_size=batch_size * 10, num_workers=4)
+    val_dataloader = validation_dataset.to_dataloader(train=False, batch_size=640, num_workers=4)
 
     if next(best_tft.parameters()).is_cuda:
         best_tft = best_tft.cpu()
@@ -86,33 +82,26 @@ def model_predict(historical_data_df):
     test_prediction_results = best_tft.predict(
         val_dataloader,
         mode="raw",
-        return_index=True, # return the prediction index in the same order as the output
-        return_x=True, # return network inputs in the same order as prediction output
-        )
+        return_index=True,
+        return_x=True,
+    )
 
     median_predictions, _ = test_prediction_results.output.prediction.median(dim=1)
     median_predictions = median_predictions.cpu().numpy()[:,1]
 
     predictions_df = pd.DataFrame(median_predictions, columns=["prediction"])
     predict_merged = pd.concat([test_prediction_results.index, predictions_df], axis=1)
-    
-    distinct_localities = test_filled[['locality', 'lon', 'lat']].drop_duplicates()
-    
-    # predict_merged = pd.merge(predictions_df, test_filled[['locality', 'lon', 'lat']], on='locality')
-    print("merging",predict_merged)
-    print("test_filled",test_filled)
-    
-    final_merged = pd.merge(predict_merged, distinct_localities, on='locality', how='left')
 
-    # Print or inspect the final merged DataFrame
-    print(final_merged)
-    
-    # Now merge with the original test_filled to include lon and lat based on locality
-    # location_df = test_filled[['locality', 'lon', 'lat']].drop_duplicates()  # Ensure no duplicate locality entries
-    # final_merged_df = pd.merge(predict_merged, location_df, on='locality', how='left')
+    # Get distinct localities
+    distinct_localities = historical_data_df[['locality', 'lon', 'lat']].drop_duplicates()
 
-    # print("Final Merged DataFrame", final_merged_df)
-    
+    # Merge predictions with distinct localities
+    predict_merged = predict_merged.merge(distinct_localities, on='locality', how='left')
+
+     # Sort by prediction in descending order and drop duplicates, keeping the first occurrence
+    predict_merged = predict_merged.sort_values(by='prediction', ascending=False).drop_duplicates(subset='locality', keep='first')
+    # print("predict_merged",predict_merged)
+
     # Return predictions as JSON
     return jsonify({
         "predictions": predict_merged.to_dict(orient="records"),
