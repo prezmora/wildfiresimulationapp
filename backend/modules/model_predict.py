@@ -70,7 +70,7 @@ def model_predict(historical_data_df):
     # Ensure historical_data_df is a DataFrame and matches the expected format
     # print("Xthis is it", historical_data_df)
     if not isinstance(historical_data_df, pd.DataFrame):
-        raise ValueError("historical_data must be a pandas DataFrame")
+        raise ValueError("historical_data must be a pandas    DataFrame")
 
     
     # print("traindataset", train_dataset)
